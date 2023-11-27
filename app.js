@@ -11,6 +11,11 @@ const http = require("http");
 // 여기서 만든 app객체로 모든 요청·응답을 진행함
 let app = express();
 
+
+//정적 파일 경로 설정
+app.use(express.static('publuc'));
+
+
 // 뷰 엔진으로 뭘 쓸지 정함. 우리는 ejs 사용.
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

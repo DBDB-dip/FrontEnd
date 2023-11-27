@@ -7,8 +7,6 @@ router.get('/', function(req, res, next) {
     //req : ~~한 요청이 app.js에서 들어옴
     //res : ~~한 응답을  보낸다.
     //next : 다음 미들웨어로 넘어감
-    
-
     res.render('index', { title: 'Express' });
     
 });
@@ -17,6 +15,7 @@ router.get('/', function(req, res, next) {
 router.get('/register', function(req, res, next) {
     res.render('register');
 });
+
 
 
 //로그인 데이터 전송 확인용.
@@ -49,6 +48,13 @@ router.get('/register', function(req, res, next) {
 
 //     res.render('register'); // 회원가입 페이지를 다시 렌더링
 // });
+
+
+router.get('/card', function(req, res, next) {
+
+    //const description = req.body.description;
+    res.render('card');
+});
 
 
 

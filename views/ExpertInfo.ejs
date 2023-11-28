@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Reviews</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        h1, p {
+            margin: 10px 0;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        input[type="button"] {
+            padding: 10px 20px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #7D1CAD;
+            color: white;
+        }
+
+        input[type="button"]:hover {
+            background-color: #4d1a9c;
+        }
+    </style>
+</head>
+<body>
+    <h1>선택한<%= userName %>님의 평점은 <%= userRating %>이며</h1>
+    <p>리뷰는 다음과 같습니다:</p>
+    <ul>
+        <% for (let i = 0; i < userReviews.length; i++) { %>
+            <li><%= userReviews[i] %></li>
+        <% } %>
+    </ul>
+
+    <p>예약을 진행하시겠습니까?</p>
+    <input type="button" value="예약하기" onclick="location.href='/reservation'">
+    <input type="button" value="다시 선택하기" onclick="location.href='/ExpertFilter'">
+</body>
+</html>

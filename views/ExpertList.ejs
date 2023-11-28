@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarot Experts</title>
+    <style>
+        /* 테이블 스타일링 */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        /* 선택 버튼 스타일링 */
+        .select-button {
+            background-color: #7D1CAD;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>"상담할 타로 전문가를 선택해 주세요."</h1>
+    <form action="/ExpertInfo" method="">
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>이름</th>
+                    <th>나이</th>
+                    <th>경력</th>
+                </tr>
+            </thead>
+            <!--<tbody>
+                <% for (let i = 0; i < tarotExperts.length; i++) { %>
+                    <tr>
+                        <td>
+                            <input type="radio" name="selectedExpert" value="<%= tarotExperts[i].name %>">
+                        </td>
+                        <td><%= tarotExperts[i].name %></td>
+                        <td><%= tarotExperts[i].age %>세</td>
+                        <td><%= tarotExperts[i].experience %>년</td>
+                    </tr>
+                <% } %>
+                </tbody>-->
+        </table>
+        <button type="submit" class="select-button">선택하기</button>
+    </form>
+</body>
+</html>

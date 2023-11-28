@@ -13,7 +13,7 @@
         <p>(카드는 하루에 한 장만 뽑을 수 있습니다)</p>
     </div>
    
-    <div class="container" onclick="fetchDescription()">
+    <div class="container" onclick="Description()">
         <% for (let i = 1; i <= 8; i++) { %>
             <div class="box box<%= i %> card<%= i %>">
                 <img src="/imgs/card.jpeg">
@@ -25,7 +25,7 @@
         <input type = "button" value = "뽑기" onclick = "shuffleCards()">
     </div>
     <div class = "footer">
-        <input type = "button" value = "홈으로">
+        <input type = "button" value = "홈으로" onclick ="window.location.href = '/ExpertFilter'" >
     </div>
 
     <script>
@@ -51,19 +51,25 @@
             });
         }
 
-        function showdescription(description) {
-            alert(description);
-        }
-
-        function fetchDescription() {
-            fetch('/card')
-                .then(res => res.json())
+        //카드 설명 fetch
+      
+        function Description() {
+            fetch('/card')//서버로부터 데이터를 받아옴
+                .then(res => res.json())//json형태로 변환
                 .then(data => {
-                   showdescription(data.description);
+                    const descriptionValue = data.description;
+                    alert(descriptionValue);
                 })
                 .catch(error =>{console.error(error)}
                 );
         }
+
+        
+
+        
+
+        
+
     </script>
 </body>
 </html>

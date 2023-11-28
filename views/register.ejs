@@ -9,22 +9,22 @@
 </head>
 <body>
     <div class = "register-wrapper">
-        <form method = "post" action = "/" id = register-form>
+        <form method = "post" action = "/index" id = register-form>
             <h1>회원가입</h1>
             <input type="text" name="Email" placeholder="Email">
             <input type="password" name="userPassword"placeholder="Password">
             <input type="text" name="Name" placeholder="Name">
             <input type="text" name="Phone" placeholder="Phone">
             <input type = "date" name = "Birth" placeholder = "Birth">
-            <label><input type="radio" name="sex" value="female"/>여성</label>
-            <label><input type="radio" name="sex" value="male"/>남성</label>
+            <label><input type="radio" name="Sex" value="female"/>여성</label>
+            <label><input type="radio" name="Sex" value="male"/>남성</label>
             <input type = "submit" value = "가입하기">
         </form>
     </div>
     <script>
         document.getElementById('register-form').addEventListener('submit', function (event) {
             event.preventDefault(); // 폼 제출 기본 동작을 막음
-            window.location.href = '/'; // 로그인 페이지로 이동
+            window.location.href = '/index'; // 로그인 페이지로 이동
         });
     </script>
 </body>

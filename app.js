@@ -3,6 +3,8 @@ let express = require('express'); // express 프레임워크를 사용하기 위
 let path = require('path'); // 프로젝트 내부에서, 파일들의 상대경로를  위한 모듈
 let cookieParser = require('cookie-parser'); // 쿠키값을 다루기 위해 필요한 모듈
 let logger = require('morgan'); // 로그를 보기 쉽게 찍기 위한 모듈
+const bodyParser = require('body-parser'); // body-parser 모듈을 사용하기 위한 모듈
+
 
 // 라우팅을 해줄 경로 설정
 let indexRouter = require('./routes/index');
@@ -14,7 +16,8 @@ let app = express();
 
 //정적 파일 경로 설정
 app.use(express.static('publuc'));
-
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json());
 
 // 뷰 엔진으로 뭘 쓸지 정함. 우리는 ejs 사용.
 app.set('views', path.join(__dirname, 'views'));

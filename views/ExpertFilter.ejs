@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel = "stylesheet" href = "stylesheets/ExpertFilter.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href = "/ExpertFilter">예약하기</a></li>
+                <li><a href = "/reserveInfo">예약정보</a></li>
+                <li><a href = "/mypage">회원정보</a></li>
+            </ul>
+        </nav>
+    </header>
+        <p>"타로전문가의 조건을 선택해주세요"</p>
+        <section>
+            <div class = "filter">
+                <form action="/ExperFilter" method="post">
+                    <label for="region">지역</label><br>
+                    <% const regions = ['서울', '인천', '대전', '광주', '부산', '대구']; %>
+                    <% for (let i = 0; i < regions.length; i++) { %>
+                        <input type="radio" name="region" value="<%= i + 1 %>"><%= regions[i] %>
+                    <% } %>
+                    <br>
+                    
+                    <label for="expertise">전문분야</label><br>
+                    <% const expertise = ['연애운', '결혼운', '이사운', '금전운', '직장운']; %>
+                    <% for (let i = 0; i < expertise.length; i++) { %>
+                        <input type="radio" name="expertise" value="<%= i + 1 %>"><%= expertise[i] %>
+                    <% } %>
+                    <br>
+                
+                    <label for="maxPrice">최고가격대(만원)</label><br>
+                    <select name="maxPrice">
+                        <% const maxPrices = [1, 2, 3, 4, 5, 6]; %>
+                        <% for (let i = 0; i < maxPrices.length; i++) { %>
+                            <option value="<%= i + 1 + regions.length + expertise.length %>"><%= maxPrices[i] %></option>
+                        <% } %>
+                    </select>
+                    <br>
+                
+                    <label for="minPrice">최저가격대(만원)</label><br>
+                    <select name="minPrice">
+                        <% const minPrices = [1, 2, 3, 4, 5,6]; %>
+                        <% for (let i = 0; i < minPrices.length; i++) { %>
+                            <option value="<%= i + 1 + regions.length + expertise.length + maxPrices.length %>"><%= minPrices[i] %></option>
+                        <% } %>
+                    </select>
+                    <br>
+                
+                    <input type="submit" value="검색하기" onclick="window.location.href = '/ExpertInfo'">
+                </form>
+            </div>
+        </section>
+    
+</body>
+</html>

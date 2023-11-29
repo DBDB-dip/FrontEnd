@@ -6,6 +6,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Reviews</title>
     <style>
+        
+        header {
+            border-bottom: 2px solid #ccc
+            
+        }
+        
+        nav {
+            margin:0px;
+            padding:20px;
+            background-color: #fff;
+            width: 100vw;
+            height: 5vh;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display:flex;
+            justify-content: space-around;
+        }
+        
+        
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+        
+        nav ul li a {
+            color: #333;
+            text-decoration: none;
+            display : inline-block;
+            padding: 10px 20px;
+            margin:5px 10px;
+            font-size: 20px;
+        }
+        
+        nav ul li:first-child a {
+            color: #7D1CAD; /* 원하는 색상으로 변경 */
+        }
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -43,6 +85,15 @@
     </style>
 </head>
 <body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href = "/ExpertFilter">예약하기</a></li>
+                <li><a href = "/reserveInfo">예약정보</a></li>
+                <li><a href = "/mypage">회원정보</a></li>
+            </ul>
+        </nav>
+    </header>
     <h1>선택한<%= userName %>님의 평점은 <%= userRating %>이며</h1>
     <p>리뷰는 다음과 같습니다:</p>
     <ul>

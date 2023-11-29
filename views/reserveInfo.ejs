@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        header {
+            border-bottom: 2px solid #ccc
+            
+        }
+        
+        nav {
+            margin:0px;
+            padding:20px;
+            background-color: #fff;
+            width: 100vw;
+            height: 5vh;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display:flex;
+            justify-content: space-around;
+        }
+        
+        
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+        
+        nav ul li a {
+            color: #333;
+            text-decoration: none;
+            display : inline-block;
+            padding: 10px 20px;
+            margin:5px 10px;
+            font-size: 20px;
+        }
+        
+        nav ul li:nth-child(2) a {
+            color: #7D1CAD; /* 변경하고자 하는 색상 */
+        }
+
+        .filter{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 50px;
+            width: 100vw;
+            height: 10vh;
+        }
+        .filter button {
+            margin: 0 50px; /* 좌우 여백 조정 */
+            transform: scale(2);
+        }
+        
+
+        /* 기존의 스타일 코드 뒤에 추가하세요 */
+        .reservation-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+
+        #review-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        #review-form form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #review-form form label,
+        #review-form form textarea,
+        #review-form form input[type="submit"] {
+            margin: 20px 0px 0px 0px;
+        
+        }
+
+
+        
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href = "/ExpertFilter">예약하기</a></li>
+                <li><a href = "/reserveInfo">예약정보</a></li>
+                <li><a href = "/mypage">회원정보</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class = "filter">
+        <button type="button" class="pastReserve">이전예약</button>
+        <button type="button" class="futureReserve">상담 예정 예약</button>
+    </div>
+    <div class="reservation-info">
+        <table>
+            <thead>
+                <tr>
+                    <th>날짜</th>
+                    <th>시간</th>
+                    <th>고객이름</th>
+                    <th>전문가이름</th>
+                    <th>리뷰쓰기</th>
+                </tr>
+            </thead>
+            <tbody id="reservationTableBody">
+                <!-- 이곳에 JavaScript를 통해 데이터를 동적으로 추가. -->
+            </tbody>
+        </table>
+    </div>
+    <div id="review-form" style="display: none;">
+
+        <form id="review-form-data">
+            <input type="hidden" id="selected-reservation-id" value="" />
+            <label for="review-message">리뷰 메시지:</label><br>
+            <textarea id="review-message" name="review-message" rows="4" cols="50"></textarea><br>
+            <input type="number" id="review-rating" name="review-rating" min="1" max="5"><br>
+            <input type="submit" value="리뷰 제출">
+        </form>
+    </div>
+
+
+    <script>
+        function fetchReservations() {
+            fetch('/api/reservations') // 예약 정보를 가져오는 API 엔드포인트 경로
+                .then(response => response.json())
+                .then(reservations => {
+                    const reservationTableBody = document.getElementById('reservationTableBody');
+    
+                    // reservations 배열을 순회하며 테이블에 각 예약 정보를 추가
+                    reservations.forEach((reservation, index) => {
+                        const row = document.createElement('tr');
+    
+                        // 각 열에 데이터를 추가
+                        row.innerHTML = `
+                            <td>${reservation.date}</td>
+                            <td>${reservation.time}</td>
+                            <td>${reservation.customer}</td>
+                            <td>${reservation.expert}</td>
+                            <td>
+                                <input type="radio" name="selectedReservation" value="${index}" />
+                            </td>
+                        `;
+    
+                        // 테이블의 tbody에 행 추가
+                        reservationTableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching reservations:', error));
+        }
+    
+        // 페이지 로드 시 예약 정보를 가져와 표시
+        window.addEventListener('load', fetchReservations);
+
+
+        const radioButtons = document.querySelectorAll('input[type="radio"]');
+        const reviewForm = document.getElementById('review-form');
+        const selectedReservationId = document.getElementById('selected-reservation-id');
+        const reviewFormSubmit = document.getElementById('review-form-data');
+    
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                const selectedId = event.target.value;
+                selectedReservationId.value = selectedId;
+    
+                reviewForm.style.display = 'block';
+            });
+        });
+    
+
+
+    
+
+        //리뷰제출 함수.
+        function submitReview(ID, reviewMessage) {
+            // 서버로 전송할 데이터 객체 생성
+            const data = {
+                id: ID,
+                review: reviewMessage
+            };
+        
+            // 서버에 POST 요청 보내기
+            fetch('/api/submitReview', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+                // 여기에서 성공적으로 리뷰가 제출되었을 때의 로직을 추가할 수 있습니다.
+                console.log('Review submitted successfully!');
+                // 성공적으로 리뷰가 제출되었을 때 클라이언트의 동작을 설정할 수 있습니다.
+            })
+            .catch(error => {
+                console.error('There was a problem submitting the review:', error);
+                // 리뷰 제출에 실패했을 때의 처리를 설정할 수 있습니다.
+            });
+        }
+        
+
+        reviewFormSubmit.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const reviewMessage = document.getElementById('review-message').value;
+            const reviewRating = document.getElementById('review-rating').value;
+            const selectedId = id.value;
+            
+            submitReview(selectedId, reviewMessage, reviewRating);
+
+            // 리뷰를 전송한 후 폼을 숨깁니다.
+            reviewForm.style.display = 'none';
+        });
+    </script>
+
+</body>
+</html>

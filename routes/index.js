@@ -77,4 +77,24 @@ router.get('/reservation', function(req, res, next) {
     res.render('reservation');
 });
 
+//예약 데이터 전송.
+router.post('/reservation',function(req,res){
+    const{date, time} = req.body;
+    res.json({date, time});
+});
+
+
+
+/// 예약 정보 페이지 렌더링
+router.get('/reserveInfo', function(req, res, next) {
+    res.render('reserveInfo');
+});
+
+
+router.post('/reserveInfo',function(req,res){
+
+
+}
+);
+
 module.exports = router;

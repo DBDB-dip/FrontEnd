@@ -17,7 +17,49 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            
+        }
+        
+        header {
+            border-bottom: 2px solid #ccc
+            
+        }
+        
+        nav {
+            margin:0px;
+            padding:20px;
+            background-color: #fff;
+            width: 100vw;
+            height: 5vh;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display:flex;
+            justify-content: space-around;
+        }
+        
+        
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+        
+        nav ul li a {
+            color: #333;
+            text-decoration: none;
+            display : inline-block;
+            padding: 10px 20px;
+            margin:5px 10px;
+            font-size: 20px;
+        }
+        
+        nav ul li:first-child a {
+            color: #7D1CAD; /* 원하는 색상으로 변경 */
         }
 
         form {
@@ -29,7 +71,7 @@
         }
 
         p {
-            margin: 0 0 10px 0;
+            margin: 50px 0 10px 0;
            
             font-size: 25px; /* 텍스트 크게 */
         }
@@ -62,6 +104,15 @@
     </style>
 </head>
 <body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href = "/ExpertFilter">예약하기</a></li>
+                <li><a href = "/reserveInfo">예약정보</a></li>
+                <li><a href = "/mypage">회원정보</a></li>
+            </ul>
+        </nav>
+    </header>
     <p>"요일과 시간을 선택해주세요."</p>
     <form action="/reservation" method="post">
         

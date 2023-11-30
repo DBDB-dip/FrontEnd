@@ -51,25 +51,26 @@
             });
         }
 
-        //카드 설명 fetch
-      
-        function Description() {
-            fetch('/card')//서버로부터 데이터를 받아옴
-                .then(res => res.json())//json형태로 변환
-                .then(data => {
-                    const container = document.querySelector('.container');
-                    //카드클릭 시 alert()로 카드 설명 띄우기
-                    container.addEventListener('click', () => {
-                        alert(data.description)
-                    });
-                    
-                })
-                .catch(error =>{console.error(error)}
-                );
+        //카드 설명 함수.
+        async function Description() {
+           try{
+            const response = await fetch(`${api_url}`)
+            const data = await response.json();
+            alert(data.TarotCardDescription);
+           }
+           catch(err){
+
+               console.log(err);
+           }
         }
 
-        
-        document.addEventListener('DOMContentLoaded',Description);
+        //클릭시 카드 설명 함수 실행.
+        document.addEventListener('DOMContentLoaded', function(){
+            const container = document.querySelector('.container');
+            container.addEventListener('click', async() =>{
+                await Description();     
+            });
+        });
         
 
         

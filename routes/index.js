@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
+let UID = null;
 
 //로그인 페이지 렌더링
 router.get('/login', function(req, res, next) {
@@ -8,6 +9,12 @@ router.get('/login', function(req, res, next) {
     //res : ~~한 응답을  보낸다.
     //next : 다음 미들웨어로 넘어감
     res.render('login', { title: 'Express' });
+});
+
+
+router.post('/login',function(req,res){
+    const userId = req.body.userId;
+    UID = userId;
 });
 
 
@@ -20,19 +27,23 @@ router.get('/register', function(req, res, next) {
 //카드뽑기 페이지 렌더링
 router.get('/card', function(req, res, next) {
     //카드 설명 데이터 받기
-    
-    res.render('card');
+    const api_url = 'http://localhost:8080/tarot/${UID}';
+    res.render('card'),{api_url};
 });
 
 
 //전문가 필터링 페이지 렌더링
 router.get('/ExpertFilter', function(req, res, next) {
+   
     res.render('ExpertFilter');
 });
 
 //전문가 리스트 페이지 렌더링
 router.get('/ExpertList', function(req, res, next) {
-    res.render('ExpertList');
+    const { city, field, minPrice, maxPrice } = req.query;
+    res.render('ExpertList',{ city, field, minPrice, maxPrice });
+
+    
 });
 
 router.get('/ExpertInfo', function(req, res, next) {

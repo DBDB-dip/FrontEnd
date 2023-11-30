@@ -20,41 +20,41 @@
         <p>"타로전문가의 조건을 선택해주세요"</p>
         <section>
             <div class = "filter">
-                <form method="post">
-                    <label for="region">지역</label><br>
-                    <% const regions = ['서울', '인천', '대전', '광주', '부산', '대구']; %>
-                    <% for (let i = 0; i < regions.length; i++) { %>
-                        <input type="radio" name="region" value="<%= i + 1 %>"><%= regions[i] %>
+                <form action = "/ExpertList" method="GET">
+                    <label for="city">지역</label><br>
+                <% const city = ['서울', '인천', '대전', '광주', '부산', '대구']; %>
+                <% for (let i = 0; i < city.length; i++) { %>
+                    <input type="radio" name="city" value="<%= city[i] %>"><%= city[i] %>
+                <% } %>
+                <br>
+                
+                <label for="field">전문분야</label><br>
+                <% const expertise = ['연애운', '결혼운', '이사운', '금전운', '직장운']; %>
+                <% for (let i = 0; i < expertise.length; i++) { %>
+                    <input type="radio" name="field" value="<%= expertise[i] %>"><%= expertise[i] %>
+                <% } %>
+                <br>
+            
+                <label for="maxPrice">최고가격대(만원)</label><br>
+                <select name="maxPrice">
+                    <% const maxPrices = [50, 60, 70, 80, 90, 100]; %>
+                    <% for (let i = 0; i < maxPrices.length; i++) { %>
+                        <option value="<%= maxPrices[i] %>"><%= maxPrices[i] %></option>
                     <% } %>
-                    <br>
-                    
-                    <label for="expertise">전문분야</label><br>
-                    <% const expertise = ['연애운', '결혼운', '이사운', '금전운', '직장운']; %>
-                    <% for (let i = 0; i < expertise.length; i++) { %>
-                        <input type="radio" name="expertise" value="<%= i + 1 %>"><%= expertise[i] %>
+                </select>
+                <br>
+            
+                <label for="minPrice">최저가격대(만원)</label><br>
+                <select name="minPrice">
+                    <% const minPrices = [50, 60, 70, 80, 90, 100]; %>
+                    <% for (let i = 0; i < minPrices.length; i++) { %>
+                        <option value="<%= minPrices[i] %>"><%= minPrices[i] %></option>
                     <% } %>
-                    <br>
-                
-                    <label for="maxPrice">최고가격대(만원)</label><br>
-                    <select name="maxPrice">
-                        <% const maxPrices = [1, 2, 3, 4, 5, 6]; %>
-                        <% for (let i = 0; i < maxPrices.length; i++) { %>
-                            <option value="<%= i + 1 + regions.length + expertise.length %>"><%= maxPrices[i] %></option>
-                        <% } %>
-                    </select>
-                    <br>
-                
-                    <label for="minPrice">최저가격대(만원)</label><br>
-                    <select name="minPrice">
-                        <% const minPrices = [1, 2, 3, 4, 5,6]; %>
-                        <% for (let i = 0; i < minPrices.length; i++) { %>
-                            <option value="<%= i + 1 + regions.length + expertise.length + maxPrices.length %>"><%= minPrices[i] %></option>
-                        <% } %>
-                    </select>
-                    <br>
-                
-                    <input type="submit" value="검색하기">
-                </form>
+                </select>
+                <br>
+            
+                <input type="submit" value="검색하기">
+            </form>
             </div>
         </section>
     <script>
@@ -64,27 +64,12 @@
             // FormData 객체 생성
             const formData = new FormData(this);
 
-            // FormData를 JSON으로 변환
-            const jsonData = {};
-            formData.forEach((value, key) => {
-                jsonData[key] = value;
-            });
 
-            // 서버로 JSON 데이터 전송
-            fetch('/api/filterData', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(jsonData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                // 서버 응답에 따른 동작 수행
-                console.log('서버 응답:', data);
-                window.location.href = '/ExpertList'; // 원하는 페이지로 이동
-            })
-            .catch(error => console.error('Error sending data:', error));
+            //쿼리 문자열 생성.
+            const params = new URLSearchParams(formData).toString();
+
+
+          
         });
     </script>
 </body>

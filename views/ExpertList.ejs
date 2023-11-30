@@ -23,6 +23,7 @@
             <thead>
                 <tr>
                     <th></th>
+                    <th>id</th>
                     <th>이름</th>
                     <th>나이</th>
                     <th>경력</th>
@@ -36,25 +37,26 @@
     </form>
 
     <script>
-        // 서버로부터 여러 JSON 데이터를 받아와서 테이블을 업데이트하는 코드
-        fetch('/')
+        const apiUrl = `http://localhost:8080/experts/filter?city=${city}&field=${field}&minPrice=${minPrice}&maxPrice=${maxPrice}`;
+
+        // 서버로부터 JSON 데이터 받아와서 테이블 업데이트
+        fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
                 const expertsTable = document.getElementById('expertsTable');
                 
-                data.forEach(jsonData => {
-                    jsonData.tarotExperts.forEach(expert => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>
-                                <input type="radio" name="selectedExpert" value="${expert.name}">
-                            </td>
-                            <td>${expert.name}</td>
-                            <td>${expert.age}세</td>
-                            <td>${expert.experience}년</td>
-                        `;
-                        expertsTable.appendChild(row);
-                    });
+                data.forEach(expert => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>
+                            <input type="radio" name="selectedExpert" value="${expert.Eid}">
+                        </td>
+                        <td>${expert.Eid}</td>
+                        <td>${expert.Name}</td>
+                        <td>${expert.Age}세</td>
+                        <td>${expert.Career}년</td>
+                    `;
+                    expertsTable.appendChild(row);
                 });
             })
             .catch(error => {

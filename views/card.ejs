@@ -13,7 +13,7 @@
         <p>(카드는 하루에 한 장만 뽑을 수 있습니다)</p>
     </div>
    
-    <div class="container" onclick="Description()">
+    <div class="container">
         <% for (let i = 1; i <= 8; i++) { %>
             <div class="box box<%= i %> card<%= i %>">
                 <img src="/imgs/card.jpeg">
@@ -57,15 +57,19 @@
             fetch('/card')//서버로부터 데이터를 받아옴
                 .then(res => res.json())//json형태로 변환
                 .then(data => {
-                    const descriptionValue = data.description;
-                    alert(descriptionValue);
+                    const container = document.querySelector('.container');
+                    //카드클릭 시 alert()로 카드 설명 띄우기
+                    container.addEventListener('click', () => {
+                        alert(data.description)
+                    });
+                    
                 })
                 .catch(error =>{console.error(error)}
                 );
         }
 
         
-
+        document.addEventListener('DOMContentLoaded',Description);
         
 
         

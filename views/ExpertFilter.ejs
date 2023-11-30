@@ -20,7 +20,7 @@
         <p>"타로전문가의 조건을 선택해주세요"</p>
         <section>
             <div class = "filter">
-                <form action="/ExperFilter" method="post">
+                <form method="post">
                     <label for="region">지역</label><br>
                     <% const regions = ['서울', '인천', '대전', '광주', '부산', '대구']; %>
                     <% for (let i = 0; i < regions.length; i++) { %>
@@ -53,10 +53,39 @@
                     </select>
                     <br>
                 
-                    <input type="submit" value="검색하기" onclick="window.location.href = '/ExpertInfo'">
+                    <input type="submit" value="검색하기">
                 </form>
             </div>
         </section>
-    
+    <script>
+        document.getElementById('filterForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // 폼 제출 기본 동작을 막음
+
+            // FormData 객체 생성
+            const formData = new FormData(this);
+
+            // FormData를 JSON으로 변환
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+
+            // 서버로 JSON 데이터 전송
+            fetch('/api/filterData', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 서버 응답에 따른 동작 수행
+                console.log('서버 응답:', data);
+                window.location.href = '/ExpertList'; // 원하는 페이지로 이동
+            })
+            .catch(error => console.error('Error sending data:', error));
+        });
+    </script>
 </body>
 </html>

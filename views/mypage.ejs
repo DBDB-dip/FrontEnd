@@ -46,7 +46,7 @@
             .then(data => {
                 if(data.result ==='success') {
                     alert('회원탈퇴가 완료되었습니다.');
-                    window.location.href = '/index';
+                    window.location.href = '/login';
                 } else if(data.result === 'fail'){
                     alert('회원탈퇴에 실패하였습니다.');
                 }

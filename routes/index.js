@@ -97,4 +97,17 @@ router.post('/reserveInfo',function(req,res){
 }
 );
 
+//회원정보 페이지 렌더링
+router.get('/mypage', function(req, res, next) {
+    res.render('mypage');
+});
+
+router.get('/memberDelete', function(req, res, next) {
+    res.render('memberDelete');
+});
+
+router.get('/memberUpdate', function(req, res, next) {
+    res.render('memberUpdate');
+});
+
 module.exports = router;

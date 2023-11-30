@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel = "stylesheet" href = "stylesheets/mypage.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href = "/ExpertFilter">예약하기</a></li>
+                <li><a href = "/reserveInfo">예약정보</a></li>
+                <li><a href = "/mypage">회원정보</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="member-info">
+        <table>
+            <thead>
+                <tr>
+                    <th>이름</th>
+                    <th>이메일</th>
+                    <th>전화번호</th>
+                    <th>생년월일</th>
+                </tr>
+            </thead>
+            <tbody id="memberTableBody">
+                <!-- 이곳에 JavaScript를 통해 데이터를 동적으로 추가. -->
+            </tbody>
+        </table>
+        <div class = "button">
+            <a href = "/memberUpdate">수정하기</a>
+            <a href = /memberDelete id = "deleteButton">탈퇴하기</a>
+        </div>
+    </div>
+    <script>
+        document.getElementById('deleteButton').addEventListener('click', function (event) {
+            event.preventDefault(); // 폼 제출 기본 동작을 막음
+            fetch('/api/deleteMember',{
+                method: 'DELETE',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.result ==='success') {
+                    alert('회원탈퇴가 완료되었습니다.');
+                    window.location.href = '/index';
+                } else if(data.result === 'fail'){
+                    alert('회원탈퇴에 실패하였습니다.');
+                }
+            })
+            .catch(error => console.error('회원탈퇴 중 에러 발생'));
+        });
+    </script>
+</body>
+</html>

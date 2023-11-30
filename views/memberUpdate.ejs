@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel = "stylesheet" href = "stylesheets/register.css">
+</head>
+<body>
+    
+    <div class = "register-wrapper">
+        <form method = "post" action = "/mypage" id = register-form>
+            <h1>회원정보 수정</h1>
+            <input type="text" name="Email" placeholder="Email">
+            <input type="password" name="userPassword"placeholder="Password">
+            <input type="text" name="Name" placeholder="Name">
+            <input type="text" name="Phone" placeholder="Phone">
+            <label><input type="radio" name="Sex" value="female"/>여성</label>
+            <label><input type="radio" name="Sex" value="male"/>남성</label>
+            <input type = "submit" value = "수정하기">
+        </form>
+    </div>
+    <script>
+        document.getElementById('register-form').addEventListener('submit', function (event) {
+            event.preventDefault(); // 폼 제출 기본 동작을 막음
+
+            const form = ducument.getElementById('register-form');
+            const formData = new FormData(form);
+            const jsonData = {};
+
+            for(const [key, value] of formData.entries()) {
+                jsonData[key] = value;
+            }
+
+            fetch('/api/updateMember', {
+                method: 'POST', // POST 메소드를 사용하여 회원 정보 수정 API 호출
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(jsonData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // API 응답에 따라 결과 메시지 처리
+                if (data.result === 'success') {
+                    alert('수정이 완료되었습니다.');
+                    window.location.href = '/mypage';
+                } else if (data.result === 'fail'){
+                    alert('수정에 실패하였습니다.');
+                }
+                
+            })
+            .catch(error => console.log('에러가발생하였습니다.'));
+
+        });
+    </script>
+</body>
+</html>
+
+
+</html>

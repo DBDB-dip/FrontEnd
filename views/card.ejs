@@ -50,18 +50,28 @@
                 });
             });
         }
+        const cookies = document.cookie.split(';').map(cookie => cookie.split('='));
+    const userIdCookie = cookies.find(cookie => cookie[0].trim() === 'userId');
+    const userId = userIdCookie ? userIdCookie[1] : null;
+    let apiUrl = '';
+
 
         //카드 설명 함수.
         async function Description() {
-           try{
-            const response = await fetch(`${api_url}`)
-            const data = await response.json();
-            alert(data.TarotCardDescription);
-           }
-           catch(err){
-
-               console.log(err);
-           }
+            
+           if (userId) {
+    const apiUrl = `http://localhost:8080/tarot/${userId}`;
+    // 여기서 apiUrl을 사용하여 필요한 작업을 수행
+    console.log(apiUrl); // apiUrl을 출력하여 확인
+    fetch(apiUrl)
+        .then(response=>response.text())
+        .then(data=>{
+            alert(data);
+        })
+        .catch(error=>console.error('Error',error));
+    } else {
+    console.log('userId를 찾을 수 없습니다.');
+}
         }
 
         //클릭시 카드 설명 함수 실행.

@@ -40,10 +40,7 @@ router.get('/ExpertFilter', function(req, res, next) {
 
 //전문가 리스트 페이지 렌더링
 router.get('/ExpertList', function(req, res, next) {
-    const {city, field, minPrice, maxPrice} = req.body;
-    res.render('ExpertList'),{city, field, minPrice, maxPrice};
-
-    
+    res.render('ExpertList');
 });
 
 

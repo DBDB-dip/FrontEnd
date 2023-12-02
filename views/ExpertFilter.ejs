@@ -29,7 +29,7 @@
                 <br>
                 
                 <label for="field">전문분야</label><br>
-                <% const expertise = ['연애운', '결혼운', '이사운', '금전운', '직장운']; %>
+                <% const expertise = ['love', 'marriage', 'move', 'money', 'job']; %>
                 <% for (let i = 0; i < expertise.length; i++) { %>
                     <input type="radio" name="field" value="<%= expertise[i] %>"><%= expertise[i] %>
                 <% } %>
@@ -37,7 +37,7 @@
             
                 <label for="maxPrice">최고가격대(만원)</label><br>
                 <select name="maxPrice">
-                    <% const maxPrices = [50, 60, 70, 80, 90, 100]; %>
+                    <% const maxPrices = [1, 2, 3, 4, 5, 6]; %>
                     <% for (let i = 0; i < maxPrices.length; i++) { %>
                         <option value="<%= maxPrices[i] %>"><%= maxPrices[i] %></option>
                     <% } %>
@@ -46,7 +46,7 @@
             
                 <label for="minPrice">최저가격대(만원)</label><br>
                 <select name="minPrice">
-                    <% const minPrices = [50, 60, 70, 80, 90, 100]; %>
+                    <% const minPrices = [1, 2, 3, 4, 5, 6]; %>
                     <% for (let i = 0; i < minPrices.length; i++) { %>
                         <option value="<%= minPrices[i] %>"><%= minPrices[i] %></option>
                     <% } %>

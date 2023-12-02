@@ -10,15 +10,15 @@
 <body>
     
     <div class = "register-wrapper">
-        <form method = "post" action = "/index" id = register-form>
+        <form method = "post" action = "/login" id = register-form>
             <h1>회원가입</h1>
-            <input type="text" name="Email" placeholder="Email">
-            <input type="password" name="userPassword"placeholder="Password">
-            <input type="text" name="Name" placeholder="Name">
-            <input type="text" name="Phone" placeholder="Phone">
-            <input type = "date" name = "Birth" placeholder = "Birth">
-            <label><input type="radio" name="Sex" value="female"/>여성</label>
-            <label><input type="radio" name="Sex" value="male"/>남성</label>
+            <input type="text" name="email" placeholder="Email">
+            <input type="password" name="password"placeholder="Password">
+            <input type="text" name="name" placeholder="Name">
+            <input type="text" name="phonenumber" placeholder="Phone">
+            <input type = "date" name = "birthdate" placeholder = "Birth">
+            <label><input type="radio" name="sex" value="F"/>여성</label>
+            <label><input type="radio" name="sex" value="M"/>남성</label>
             <input type = "submit" value = "가입하기">
         </form>
     </div>
@@ -26,45 +26,42 @@
         document.getElementById('register-form').addEventListener('submit', function (event) {
             event.preventDefault(); // 폼 제출 기본 동작을 막음
 
-            const email = document.getElementsByName('Email')[0].value;
-            const password = document.getElementsByName('userPassword')[0].value;
-            const name = document.getElementsByName('Name')[0].value;
-            const phone = document.getElementsByName('Phone')[0].value;
-            const birth = document.getElementByName('Birth')[0].value;
-            const sex = document.querySelector('input[name="Sex"]:checked').value;
+            const email = document.getElementsByName('email')[0].value;
+            const password = document.getElementsByName('password')[0].value;
+            const name = document.getElementsByName('name')[0].value;
+            const phone = document.getElementsByName('phonenumber')[0].value;
+            const birth = document.getElementsByName('birthdate')[0].value;
+            const sex = document.querySelector('input[name="sex"]:checked').value;
 
             const params = new URLSearchParams();
-            params.append('Email', email);
-            params.append('Password', password);
-            params.append('Name', name);
-            params.append('Phone', phone);
-            params.append('Birth', birth);
-            params.append('Sex',sex);
+            params.append('email', email);
+            params.append('password', password);
+            params.append('name', name);
+            params.append('phonenumber', phone);
+            params.append('birthdate', birth);
+            params.append('sex',sex);
 
             fetch('http://localhost:8080/joinpro?'+params.toString(),{
                 method: 'POST'
               
             }).then(response =>{
-                if(response.status == 409){
-                    alert('이미 존재하는 이메일입니다.');
+                if(response.status == 201){
+                    alert('회원가입성공');
+                    window.location.href = '/login'
                 }
-            })
-            .then(result => {
-                if(result=='Success'){
-                    alert('회원가입 성공');
-                    window.location.href = '/login';
-                }
-                else if(result == 'Failed'){
+                else if(response.status== 409){
                     alert('이미 가입된 이메일');
-                }
-                else{
-                    alert('유효하지 않은 응답');
+                    window.location.href = '/login'
                 }
             })
+            .then(result=>{
+                if(result)
+                    window.location.href='/login';
+            })
+           
             .catch(error => console.error('Error:', error));
           
         });
     </script>
 </body>
 </html>
-

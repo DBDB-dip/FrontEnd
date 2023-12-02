@@ -4,69 +4,69 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>회원정보 수정</title>
+    <link rel="stylesheet" href="stylesheets/register.css">
 </head>
 <body>
-    
-</body><!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel = "stylesheet" href = "stylesheets/register.css">
-</head>
-<body>
-    
-    <div class = "register-wrapper">
-        <form method = "post" action = "/mypage" id = register-form>
+
+    <div class="register-wrapper">
+        <form method="post" action="" id="register-form">
             <h1>회원정보 수정</h1>
-            <input type="text" name="Email" placeholder="Email">
-            <input type="password" name="userPassword"placeholder="Password">
-            <input type="text" name="Name" placeholder="Name">
-            <input type="text" name="Phone" placeholder="Phone">
-            <label><input type="radio" name="Sex" value="female"/>여성</label>
-            <label><input type="radio" name="Sex" value="male"/>남성</label>
-            <input type = "submit" value = "수정하기">
+            
+            <input type="password" name="password" placeholder="Password">
+            <input type="text" name="name" placeholder="Name">
+            <input type="text" name="phoneNumber" placeholder="Phone">
+            <label><input type="radio" name="sex" value="F"/>여성</label>
+            <label><input type="radio" name="sex" value="M"/>남성</label>
+            <input type="submit" value="수정하기">
         </form>
     </div>
+
     <script>
-        document.getElementById('register-form').addEventListener('submit', function (event) {
-            event.preventDefault(); // 폼 제출 기본 동작을 막음
+        const registerForm = document.getElementById('register-form');
 
-            const form = ducument.getElementById('register-form');
-            const formData = new FormData(form);
-            const jsonData = {};
+        registerForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
 
-            for(const [key, value] of formData.entries()) {
-                jsonData[key] = value;
-            }
+            const cookies = document.cookie.split(';').map(cookie => cookie.split('='));
+            const userIdCookie = cookies.find(cookie => cookie[0].trim() === 'userId');
+            const userId = userIdCookie ? userIdCookie[1] : null;
 
-            fetch('/api/updateMember', {
-                method: 'POST', // POST 메소드를 사용하여 회원 정보 수정 API 호출
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(jsonData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                // API 응답에 따라 결과 메시지 처리
-                if (data.result === 'success') {
-                    alert('수정이 완료되었습니다.');
-                    window.location.href = '/mypage';
-                } else if (data.result === 'fail'){
-                    alert('수정에 실패하였습니다.');
+            if (userId) {
+                const userPassword = registerForm.querySelector('input[name="password"]').value;
+                const name = registerForm.querySelector('input[name="name"]').value;
+                const phone = registerForm.querySelector('input[name="phoneNumber"]').value;
+                const sex = registerForm.querySelector('input[name="sex"]:checked').value;
+
+                const apiUrl = `http://localhost:8080/${userId}/modification`;
+                const formData = new FormData();
+                formData.append('password', userPassword);
+                formData.append('name', name);
+                formData.append('phoneNumber', phone);
+                formData.append('sex', sex);
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.status === 201) {
+                        alert('Information Modification Success');
+                        // 성공적으로 수정되었을 때의 처리
+                    } else {
+                        console.error('서버 응답 오류:', response.status);
+                        // 실패했을 때의 처리
+                    }
+                } catch (error) {
+                    console.error('데이터를 전송하는 도중 에러가 발생했습니다:', error);
+                    // 에러 발생 시의 처리
                 }
-                
-            })
-            .catch(error => console.log('에러가발생하였습니다.'));
-
+            } else {
+                console.log('userId를 찾을 수 없습니다.');
+            }
         });
     </script>
+
 </body>
-</html>
-
-
 </html>

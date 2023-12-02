@@ -37,22 +37,62 @@
         </div>
     </div>
     <script>
-        document.getElementById('deleteButton').addEventListener('click', function (event) {
-            event.preventDefault(); // 폼 제출 기본 동작을 막음
-            fetch('/api/deleteMember',{
-                method: 'DELETE',
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.result ==='success') {
-                    alert('회원탈퇴가 완료되었습니다.');
-                    window.location.href = '/login';
-                } else if(data.result === 'fail'){
-                    alert('회원탈퇴에 실패하였습니다.');
+        const cookies = document.cookie.split(';').map(cookie => cookie.split('='));
+        const userIdCookie = cookies.find(cookie => cookie[0].trim() === 'userId');
+        const userId = userIdCookie ? userIdCookie[1] : null;
+        let apiUrl = '';
+
+        async function fetchMemberInfo() {
+            if (userId) {
+                apiUrl = `http://localhost:8080/${userId}/information`;
+                try {
+                    const response = await fetch(apiUrl);
+                    if (response.ok) {
+                        const memberInfo = await response.json();
+                        populateMemberInfo(memberInfo);
+                    } else {
+                        console.error('서버 응답 오류:', response.status);
+                    }
+                } catch (error) {
+                    console.error('데이터를 불러오는 도중 에러가 발생했습니다:', error);
                 }
-            })
-            .catch(error => console.error('회원탈퇴 중 에러 발생'));
-        });
+            } else {
+                console.log('userId를 찾을 수 없습니다.');
+            }
+        }
+
+        function populateMemberInfo(memberInfo) {
+            const memberTableBody = document.getElementById('memberTableBody');
+            memberTableBody.innerHTML = '';
+
+            const row = document.createElement('tr');
+
+            // 이름 추가
+            const nameCell = document.createElement('td');
+            nameCell.textContent = memberInfo.name; // 이름 필드에 접근하는 방법에 따라 수정
+            row.appendChild(nameCell);
+
+            // 이메일 추가
+            const emailCell = document.createElement('td');
+            emailCell.textContent = memberInfo.email; // 이메일 필드에 접근하는 방법에 따라 수정
+            row.appendChild(emailCell);
+
+            // 전화번호 추가
+            const phoneCell = document.createElement('td');
+            phoneCell.textContent = memberInfo.phoneNumber; // 전화번호 필드에 접근하는 방법에 따라 수정
+            row.appendChild(phoneCell);
+
+            // 생년월일 추가
+            const birthDateCell = document.createElement('td');
+            birthDateCell.textContent = memberInfo.birthDate; // 생년월일 필드에 접근하는 방법에 따라 수정
+            row.appendChild(birthDateCell);
+
+            memberTableBody.appendChild(row);
+        }
+
+        // 페이지 로드 시 회원 정보를 가져와서 테이블에 추가
+        fetchMemberInfo();
+
     </script>
 </body>
 </html>

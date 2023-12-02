@@ -65,6 +65,14 @@ nav ul li a {
     font-size: 20px;
 }
 
+
 nav ul li:first-child a {
     color: #7D1CAD; /* 원하는 색상으로 변경 */
+}
+
+
+
+.select-button{
+    display:block;
+    margin: 150px auto;
 }

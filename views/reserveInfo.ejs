@@ -19,8 +19,8 @@
     </header>
     <div class = "filter">
         <form id = "button-form">
-            <button type="button" class="pastReserve">이전예약</button>
-            <button type="button" class="futureReserve">상담 예정 예약</button>
+            <button type="button" class="pastReserve" onclick="getPre()">이전예약</button>
+            <button type="button" class="futureReserve" onclick="getFuture()">상담 예정 예약</button>
         </form>
     </div>
 
@@ -53,153 +53,122 @@
 
 
     <script>
-        function fetchReservations() {
-            fetch('/api/reservations')
-                .then(response => response.json())
-                .then(reservations => {
-                    const reservationTableBody = document.getElementById('reservationTableBody');
+        const cookies = document.cookie.split(';').map(cookie => cookie.split('='));
+        const userIdCookie = cookies.find(cookie => cookie[0].trim() === 'userId');
+        const userId = userIdCookie ? userIdCookie[1] : null;
+        let apiUrl = '';
 
-                    reservations.forEach((reservation, index) => {
-                        const row = document.createElement('tr');
-
-                        row.innerHTML = `
-                            <td>${reservation.date}</td>
-                            <td>${reservation.time}</td>
-                            <td>${reservation.customer}</td>
-                            <td>${reservation.expert}</td>
-                            <td>
-                                <input type="radio" name="selectedReservation" value="${index}" />
-                            </td>
-                        `;
-
-                        reservationTableBody.appendChild(row);
-                    });
-                })
-                .catch(error => console.error('Error fetching reservations:', error));
-        }
-
-        window.addEventListener('load', fetchReservations);
-
-        const buttonForm = document.getElementById('button-form');
-        const pastReserve = document.querySelector('.pastReserve');
-        const futureReserve = document.querySelector('.futureReserve');
-
-        pastReserve.addEventListener('click', function() {
-            fetch('/api/pastReservations')
-                .then(response => response.json())
-                .then(pastReservations => {
-                    const reservationTableBody = document.getElementById('reservationTableBody');
-                    reservationTableBody.innerHTML = '';
-
-                    pastReservations.forEach(reservation => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${reservation.date}</td>
-                            <td>${reservation.time}</td>
-                            <td>${reservation.customer}</td>
-                            <td>${reservation.expert}</td>
-                            <td>
-                                <input type="radio" name="selectedReservation" value="${reservation.id}" />
-                            </td>
-                        `;
-                        reservationTableBody.appendChild(row);
-                    });
-                })
-                .catch(error => console.error('Error fetching past reservations:', error));
-        });
-
-        futureReserve.addEventListener('click', function() {
-            fetch('/api/futureReservations')
-                .then(response => response.json())
-                .then(futureReservations => {
-                    const reservationTableBody = document.getElementById('reservationTableBody');
-                    reservationTableBody.innerHTML = '';
-
-                    futureReservations.forEach(reservation => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${reservation.date}</td>
-                            <td>${reservation.time}</td>
-                            <td>${reservation.customer}</td>
-                            <td>${reservation.expert}</td>
-                            <td>
-                                <input type="radio" name="selectedReservation" value="${reservation.id}" />
-                            </td>
-                        `;
-                        reservationTableBody.appendChild(row);
-                    });
-                })
-                .catch(error => console.error('Error fetching future reservations:', error));
-        });
-
-
-
-
-
-
-
-
-
-        const radioButtons = document.querySelectorAll('input[type="radio"]');
-        const reviewForm = document.getElementById('review-form');
-        const selectedReservationId = document.getElementById('selected-reservation-id');
-        const reviewFormSubmit = document.getElementById('review-form-data');
-    
-        radioButtons.forEach(radio => {
-            radio.addEventListener('change', (event) => {
-                const selectedId = event.target.value;
-                selectedReservationId.value = selectedId;
-    
-                reviewForm.style.display = 'block';
-            });
-        });
-    
-
-
-    
-
-        //리뷰제출 함수.
-        function submitReview(ID, reviewMessage) {
-            // 서버로 전송할 데이터 객체 생성
-            const data = {
-                id: ID,
-                review: reviewMessage
-            };
-        
-            // 서버에 POST 요청 보내기
-            fetch('/api/submitReview', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok.');
+        async function Reservation(){
+            if(userId){
+                apiUrl = `http://localhost:8080/reservations?userId=${userId}`;
+                try{
+                    const response = await fetch(apiUrl);
+                    if(response.ok){
+                        const dataArray = await response.json();
+                        updateReservationTable(dataArray);
+                    }
+                    else{
+                        console.error('서버 응답 오류:', response.status);
+                    }
                 }
-                // 여기에서 성공적으로 리뷰가 제출되었을 때의 로직을 추가할 수 있습니다.
-                console.log('Review submitted successfully!');
-                // 성공적으로 리뷰가 제출되었을 때 클라이언트의 동작을 설정할 수 있습니다.
-            })
-            .catch(error => {
-                console.error('There was a problem submitting the review:', error);
-                // 리뷰 제출에 실패했을 때의 처리를 설정할 수 있습니다.
+                catch(error){
+                    console.error('데이터를 불러오는 도중 에러가 발생했습니다:', error);
+                }
+            }
+            else{
+                console.log('userId를 찾을 수 없습니다.');
+            }
+
+        }
+
+        
+        function updateReservationTable(dataArray){
+            const reservationTableBody = document.getElementById('reservationTableBody');
+            reservationTableBody.innerHTML = '';
+            dataArray.forEach(data => {
+                const row = document.createElement('tr');
+                
+                // 각 열 추가
+        const dateCell = document.createElement('td');
+        dateCell.textContent = data.reservDate; // 예약 날짜 데이터 필드에 접근하는 방법에 따라 수정
+        row.appendChild(dateCell);
+
+        const timeCell = document.createElement('td');
+        timeCell.textContent = data.reservTime; // 예약 시간 데이터 필드에 접근하는 방법에 따라 수정
+        row.appendChild(timeCell);
+
+        const customerNameCell = document.createElement('td');
+        customerNameCell.textContent = data.userName; // 고객 이름 데이터 필드에 접근하는 방법에 따라 수정
+        row.appendChild(customerNameCell);
+
+        const expertNameCell = document.createElement('td');
+        expertNameCell.textContent = data.expertsName; // 전문가 이름 데이터 필드에 접근하는 방법에 따라 수정
+        row.appendChild(expertNameCell);
+
+        const reviewCell = document.createElement('td');
+        const reviewButton = document.createElement('button');
+        reviewButton.textContent = '리뷰쓰기';
+        reviewButton.addEventListener('click', () => openReviewForm(data.id)); // 리뷰 작성 폼 열기
+        reviewCell.appendChild(reviewButton);
+        row.appendChild(reviewCell);
+
+        reservationTableBody.appendChild(row);
             });
         }
-        
+      
+        Reservation();
 
-        reviewFormSubmit.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const reviewMessage = document.getElementById('review-message').value;
-            const reviewRating = document.getElementById('review-rating').value;
-            const selectedId = id.value;
-            
-            submitReview(selectedId, reviewMessage, reviewRating);
 
-            // 리뷰를 전송한 후 폼을 숨깁니다.
-            reviewForm.style.display = 'none';
-        });
+        async function getPre() {
+            if (userId) {
+                apiUrl = `http://localhost:8080/reservations/?status=before&userId=${userId}`;
+                try {
+                    const response = await fetch(apiUrl);
+                    if (response.ok) {
+                        const dataArray = await response.json();
+                        updateReservationTable(dataArray);
+                    } else {
+                        console.error('서버 응답 오류:', response.status);
+                    }
+                } catch (error) {
+                    console.error('데이터를 불러오는 도중 에러가 발생했습니다:', error);
+                }
+            } else {
+                console.log('userId를 찾을 수 없습니다.');
+            }
+        }
+
+
+
+
+        async function getFuture() {
+            if (userId) {
+                apiUrl = `http://localhost:8080/reservations/?status=after&userId=${userId}`;
+                try {
+                    const response = await fetch(apiUrl);
+                    if (response.ok) {
+                        const dataArray = await response.json();
+                        updateReservationTable(dataArray);
+                    } else {
+                        console.error('서버 응답 오류:', response.status);
+                    }
+                } catch (error) {
+                    console.error('데이터를 불러오는 도중 에러가 발생했습니다:', error);
+                }
+            } else {
+                console.log('userId를 찾을 수 없습니다.');
+            }
+        }
+
+
+
+
+
+
+
+
+
+
     </script>
 
 </body>

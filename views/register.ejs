@@ -26,31 +26,43 @@
         document.getElementById('register-form').addEventListener('submit', function (event) {
             event.preventDefault(); // 폼 제출 기본 동작을 막음
 
-            const form = event.target; // 폼 엘리먼트
-            const formData = new FormData(form); // 폼 데이터 객체 생성
+            const email = document.getElementsByName('Email')[0].value;
+            const password = document.getElementsByName('userPassword')[0].value;
+            const name = document.getElementsByName('Name')[0].value;
+            const phone = document.getElementsByName('Phone')[0].value;
+            const birth = document.getElementByName('Birth')[0].value;
+            const sex = document.querySelector('input[name="Sex"]:checked').value;
 
-            const jsonData = {};
-            for(const [key,value] of formData.entries()) {
-                jsonData[key] = value;
-            }
+            const params = new URLSearchParams();
+            params.append('Email', email);
+            params.append('Password', password);
+            params.append('Name', name);
+            params.append('Phone', phone);
+            params.append('Birth', birth);
+            params.append('Sex',sex);
 
-            fetch('/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(jsonData) // 폼 데이터를 json 형식으로 변환
-            }).then(response => response.json())
-            .then(data =>{
-                if(data.result === 'success') {
-                    window.location.href = '/login'; // 로그인 페이지로 이동
-                } else {
-                    alert('회원가입 실패');
+            fetch('http://localhost:8080/joinpro?'+params.toString(),{
+                method: 'POST'
+              
+            }).then(response =>{
+                if(response.status == 409){
+                    alert('이미 존재하는 이메일입니다.');
+                }
+            })
+            .then(result => {
+                if(result=='Success'){
+                    alert('회원가입 성공');
+                    window.location.href = '/login';
+                }
+                else if(result == 'Failed'){
+                    alert('이미 가입된 이메일');
+                }
+                else{
+                    alert('유효하지 않은 응답');
                 }
             })
             .catch(error => console.error('Error:', error));
-
-            
+          
         });
     </script>
 </body>

@@ -17,16 +17,59 @@
             </ul>
         </nav>
     </header>
-    <h1>선택한<%= userName %>님의 평점은 <%= userRating %>이며</h1>
+   
     <p>리뷰는 다음과 같습니다:</p>
-    <ul>
-        <% for (let i = 0; i < userReviews.length; i++) { %>
-            <li><%= userReviews[i] %></li>
-        <% } %>
-    </ul>
+    <div id = "reviewsList">
+
+    </div>
 
     <p>예약을 진행하시겠습니까?</p>
     <input type="button" value="예약하기" onclick="location.href='/reservation'">
     <input type="button" value="다시 선택하기" onclick="location.href='/ExpertFilter'">
+<script>
+    // 쿠키에서 전문가 ID 가져오기
+function getSelectedExpertId() {
+    const cookies = document.cookie.split(';');
+    const selectedExpertIdCookie = cookies.find(cookie => cookie.trim().startsWith('selectedExpertId='));
+    if (selectedExpertIdCookie) {
+        return selectedExpertIdCookie.split('=')[1];
+    } else {
+        return null;
+    }
+}
+
+// 쿠키에서 전문가 ID 가져오기
+const selectedExpertId = getSelectedExpertId();
+
+if (selectedExpertId) {
+    const url = `http://localhost:8080/experts/${selectedExpertId}/reviews`;
+
+    // 서버에 리뷰 요청 보내기
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(reviews => {
+            const reviewsList = document.getElementById('reviewsList');
+
+             reviews.forEach(review => {
+            const reviewItem = document.createElement('p');
+                 reviewItem.innerHTML = `평점: ${review.starRate}<br> 코멘트: ${review.comments}<br><br>`;
+                reviewsList.appendChild(reviewItem);
+                    });
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+        });
+} else {
+    console.log('쿠키에 저장된 전문가 ID가 없습니다.');
+}
+
+
+</script>
+
 </body>
 </html>

@@ -93,6 +93,39 @@
         // 페이지 로드 시 회원 정보를 가져와서 테이블에 추가
         fetchMemberInfo();
 
+        const deleteButton = document.getElementById('deleteButton');
+deleteButton.addEventListener('click', handleDelete);
+
+async function handleDelete(event) {
+    event.preventDefault();
+
+    const cookies = document.cookie.split(';').map(cookie => cookie.split('='));
+    const userIdCookie = cookies.find(cookie => cookie[0].trim() === 'userId');
+    const userId = userIdCookie ? userIdCookie[1] : null;
+
+    if (userId) {
+        const apiUrl = `http://localhost:8080/${userId}/resign`;
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                alert('회원 탈퇴가 완료되었습니다.');
+            } else {
+                console.error('서버 응답 오류:', response.status);
+                alert('회원 탈퇴에 실패했습니다. 다시 시도해주세요.');
+            }
+        } catch (error) {
+            console.error('요청 중 에러가 발생했습니다:', error);
+            alert('요청 처리 중 에러가 발생했습니다. 다시 시도해주세요.');
+        }
+    } else {
+        console.log('userId를 찾을 수 없습니다.');
+    }
+}
+
+
     </script>
 </body>
 </html>

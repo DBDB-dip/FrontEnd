@@ -38,12 +38,6 @@ router.get('/ExpertFilter', function(req, res, next) {
     res.render('ExpertFilter');
 });
 
-//전문가 리스트 페이지 렌더링
-router.get('/ExpertList', function(req, res, next) {
-    res.render('ExpertList');
-});
-
-
 
 router.get('/ExpertInfo', function(req, res, next) {
     res.render('ExpertInfo');
@@ -74,10 +68,12 @@ router.post('/reserveInfo',function(req,res){
 }
 );
 
+
 //회원정보 페이지 렌더링
 router.get('/mypage', function(req, res, next) {
     res.render('mypage');
 });
+
 
 router.get('/memberDelete', function(req, res, next) {
     res.render('memberDelete');

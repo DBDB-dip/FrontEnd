@@ -5,71 +5,104 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel = "stylesheet" href = "stylesheets/ExpertFilter.css">
+    <link rel="stylesheet" href="stylesheets/ExpertFilter.css">
 </head>
 <body>
     <header>
         <nav>
             <ul>
-                <li><a href = "/ExpertFilter">예약하기</a></li>
-                <li><a href = "/reserveInfo">예약정보</a></li>
-                <li><a href = "/mypage">회원정보</a></li>
+                <li><a href="/ExpertFilter">예약하기</a></li>
+                <li><a href="/reserveInfo">예약정보</a></li>
+                <li><a href="/mypage">회원정보</a></li>
             </ul>
         </nav>
     </header>
-        <p>"타로전문가의 조건을 선택해주세요"</p>
-        <section>
-            <div class = "filter">
-                <form action = "/ExpertList" method="GET">
-                    <label for="city">지역</label><br>
+    <p>"타로전문가의 조건을 선택해주세요"</p>
+    <section>
+        <div class="filter">
+            <form id="filterForm">
+                <label for="city">지역</label><br>
                 <% const city = ['서울', '인천', '대전', '광주', '부산', '대구']; %>
                 <% for (let i = 0; i < city.length; i++) { %>
-                    <input type="radio" name="city" value="<%= city[i] %>"><%= city[i] %>
+                    <input type="radio" name="city" value="<%= city[i] %>"><%= city[i] %><br>
                 <% } %>
-                <br>
-                
+
                 <label for="field">전문분야</label><br>
                 <% const expertise = ['love', 'marriage', 'move', 'money', 'job']; %>
                 <% for (let i = 0; i < expertise.length; i++) { %>
-                    <input type="radio" name="field" value="<%= expertise[i] %>"><%= expertise[i] %>
+                    <input type="radio" name="field" value="<%= expertise[i] %>"><%= expertise[i] %><br>
                 <% } %>
-                <br>
-            
+
                 <label for="maxPrice">최고가격대(만원)</label><br>
                 <select name="maxPrice">
                     <% const maxPrices = [1, 2, 3, 4, 5, 6]; %>
                     <% for (let i = 0; i < maxPrices.length; i++) { %>
                         <option value="<%= maxPrices[i] %>"><%= maxPrices[i] %></option>
                     <% } %>
-                </select>
-                <br>
-            
+                </select><br>
+
                 <label for="minPrice">최저가격대(만원)</label><br>
                 <select name="minPrice">
                     <% const minPrices = [1, 2, 3, 4, 5, 6]; %>
                     <% for (let i = 0; i < minPrices.length; i++) { %>
                         <option value="<%= minPrices[i] %>"><%= minPrices[i] %></option>
                     <% } %>
-                </select>
-                <br>
-            
+                </select><br>
+
                 <input type="submit" value="검색하기">
             </form>
-            </div>
-        </section>
+            <h1>상담할 타로 전문가를 선택해주세요.</h1>
+            <form id="expertForm">
+                <fieldset id="expertFieldset"></fieldset>
+                <button type="submit" class="selected-button" onclick="window.location.href='/ExpertInfo'">선택하기</button>
+            </form>
+            
+        </div>
+    </section>
     <script>
         document.getElementById('filterForm').addEventListener('submit', function(event) {
             event.preventDefault(); // 폼 제출 기본 동작을 막음
 
             // FormData 객체 생성
             const formData = new FormData(this);
-
+            const expertFieldset = document.getElementById('expertFieldset');
 
             //쿼리 문자열 생성.
             const params = new URLSearchParams(formData).toString();
+            fetch(`http://localhost:8080/experts/filter?${params}`)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(expert => {
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = 'expert';
+                    radio.value = JSON.stringify(expert);
+                    const label = document.createElement('label');
+                    label.textContent = `이름 : ${expert.name},  경력 :  ${expert.career},  나이:${expert.age}`;
 
+                    expertFieldset.appendChild(radio);
+                    expertFieldset.appendChild(label);
+                    expertFieldset.appendChild(document.createElement('br'));
+                });
+            });
 
-          
+            document.getElementById('expertForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const selectedExpert = document.querySelector('input[name="expert"]:checked');
+
+                if (selectedExpert) {
+                    const expertData = JSON.parse(selectedExpert.value);
+                    const expertId = expertData.id;
+                   
+                    // 선택된 전문가 데이터 콘솔 출력
+                    document.cookie = `selectedExpertId = ${expertId}`;
+                    
+
+                } else {
+                    console.log('전문가를 선택해주세요.');
+                }
+            });
         });
     </script>
 </body>

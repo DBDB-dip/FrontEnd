@@ -59,7 +59,9 @@
         }
         
         const expertsUrl = `http://localhost:8080/experts/${selectedExpertId}`;
+        
 
+        //전문가의 요일과 시간 출력하기.
         fetch(expertsUrl)
         .then(response => {
             if (!response.ok) {
@@ -82,11 +84,33 @@
                 return timeRange;
             }
 
+            function convertDayToInteger(day) {
+                switch (day) {
+                    case '월요일':
+                        return 1;
+                    case '화요일':
+                        return 2;
+                    case '수요일':
+                        return 3;
+                    case '목요일':
+                        return 4;
+                    case '금요일':
+                        return 5;
+                    case '토요일':
+                        return 6;
+                    case '일요일':
+                        return 7;
+                    default:
+                        return null;
+                }
+            }
+
             responseData.forEach(data => {
+                //요일 동적 생성
                 const dayRadioButton = document.createElement('input');
                 dayRadioButton.type = 'radio';
                 dayRadioButton.name = 'day';
-                dayRadioButton.value = data.workday;
+                dayRadioButton.value = convertDayToInteger(data.workday);
                 const label = document.createElement('label');
                 label.textContent = data.workday;
 
@@ -94,6 +118,8 @@
                 daySelectionDiv.appendChild(label);
                 daySelectionDiv.appendChild(document.createElement('br'));
 
+
+                //시간 동적 생성
                 const timeRange = createTimeRange(data.startTime, data.endTime);
                 timeRange.forEach(time => {
                     const timeRadioButton = document.createElement('input');
@@ -108,7 +134,9 @@
                     timeSelectionDiv.appendChild(document.createElement('br'));
                 });
             });
+            
 
+            //선택 후 제출하면 디비에서 예약 진행.
             document.querySelector('form').addEventListener('submit', function(event) {
                 event.preventDefault();
 
@@ -121,10 +149,10 @@
                     method: 'POST',
                 })
                 .then(response => {
-                    if (response.ok) {
+                    if (response.status ==201) {
                         alert('예약이 성공적으로 완료되었습니다.');
                     } else {
-                        alert('해당 시간에 이미 예약이 있습니다. 다른 요일이나 시간을 선택해주세요.');
+                        alert('이미 찬 예약 입니다. 다른 요일이나 시간을 선택해주세요.');
                     }
                 })
                 .catch(error => {

@@ -60,7 +60,7 @@ section {
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    height: 50vh;
+    height: 60vh;
     margin: 20px 150px; /* 수정 */
 }
 
@@ -77,7 +77,7 @@ section {
     margin: 0px 10px 0px 20px;
 }
 
-.filter input[type="submit"] {
+[type="submit"] {
     background-color: #7D1CAD;
     color: white;
     padding: 10px 20px;
@@ -95,3 +95,4 @@ section {
     margin-bottom: 10px; /* 수정 */
     vertical-align: top;
 }
+

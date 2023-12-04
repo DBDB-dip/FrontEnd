@@ -5,7 +5,7 @@ let cookieParser = require('cookie-parser'); // 쿠키값을 다루기 위해 �
 let logger = require('morgan'); // 로그를 보기 쉽게 찍기 위한 모듈
 const bodyParser = require('body-parser'); // body-parser 모듈을 사용하기 위한 모듈
 const cors = require('cors');
-const axios = require('axios');
+
 
 // 라우팅을 해줄 경로 설정
 let indexRouter = require('./routes/index');

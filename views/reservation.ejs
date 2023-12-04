@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservation</title>
-    <link rel = "stylesheet" href = "stylesheets/reservation.css">
+    <link rel="stylesheet" href="stylesheets/reservation.css">
     <style>
   
     </style>
@@ -15,35 +14,124 @@
     <header>
         <nav>
             <ul>
-                <li><a href = "/ExpertFilter">예약하기</a></li>
-                <li><a href = "/reserveInfo">예약정보</a></li>
-                <li><a href = "/mypage">회원정보</a></li>
+                <li><a href="/ExpertFilter">예약하기</a></li>
+                <li><a href="/reserveInfo">예약정보</a></li>
+                <li><a href="/mypage">회원정보</a></li>
             </ul>
         </nav>
     </header>
     <p>"요일과 시간을 선택해주세요."</p>
-    <form action="/reservation" method="post">
+    <form >
         
         <label for="day">요일</label>
-        <% const days = ['월', '화', '수', '목', '금', '토', '일']; %>
-        <% for (let i = 0; i < days.length; i++) { %>
-            <input type="radio" name="day" value="<%= i + 1 %>"><%= days[i] %><br>
-        <% } %>
+        <div id="daySelection">
+            <!-- 라디오 버튼 동적 생성 -->
+        </div>
+       
 
         <p>&nbsp;</p><!-- 간격 추가 -->
 
         <label for="time">시간(1시간 단위)</label>
-        <% const times = ['오전 9시', '오전 10시', '오전 11시', '오후 12시', '오후 1시', '오후 2시', '오후 3시', '오후 4시', '오후 5시', '오후 6시', '오후 7시', '오후 8시', '오후 9시']; %>
-        <% for (let i = 0; i < times.length; i++) { %><br>
-            
-                <input type="radio" name="time" value="<%= i + 1 + days.length %>"><%= times[i] %>
-        
-        <% } %>
+        <div id="timeSelection">
+            <!-- 라디오 버튼 동적 생성 -->
+        </div>
+       
 
         <p>&nbsp;</p><!-- 간격 추가 -->
 
         <input type="submit" value="예약하기">
     </form>
+
+    <script>
+        const userId = getCookie('userId');
+        const selectedExpertId = getCookie('selectedExpertId');
+
+        // 쿠키에서 값을 가져오는 함수
+        function getCookie(name) {
+            const cookies = document.cookie.split('; ');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].split('=');
+                if (cookie[0] === name) {
+                    return cookie[1];
+                }
+            }
+            return null;
+        }
+        
+        const expertsUrl = `http://localhost:8080/experts/${selectedExpertId}`;
+
+        fetch(expertsUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok.');
+            }
+            return response.json(); // JSON 형태로 응답 데이터 가져오기
+        })
+        .then(data => {
+            const responseData = data;
+
+            const daySelectionDiv = document.getElementById('daySelection');
+            const timeSelectionDiv = document.getElementById('timeSelection');
+
+            function createTimeRange(start, end) {
+                const timeRange = [];
+                for (let i = start; i <= end; i++) {
+                    timeRange.push(`${i}:00 - ${i + 1}:00`);
+                }
+
+                return timeRange;
+            }
+
+            responseData.forEach(data => {
+                const dayRadioButton = document.createElement('input');
+                dayRadioButton.type = 'radio';
+                dayRadioButton.name = 'day';
+                dayRadioButton.value = data.workday;
+                const label = document.createElement('label');
+                label.textContent = data.workday;
+
+                daySelectionDiv.appendChild(dayRadioButton);
+                daySelectionDiv.appendChild(label);
+                daySelectionDiv.appendChild(document.createElement('br'));
+
+                const timeRange = createTimeRange(data.startTime, data.endTime);
+                timeRange.forEach(time => {
+                    const timeRadioButton = document.createElement('input');
+                    timeRadioButton.type = 'radio';
+                    timeRadioButton.name = 'time';
+                    timeRadioButton.value = time;
+                    const timeLabel = document.createElement('label');
+                    timeLabel.textContent = time;
+
+                    timeSelectionDiv.appendChild(timeRadioButton);
+                    timeSelectionDiv.appendChild(timeLabel);
+                    timeSelectionDiv.appendChild(document.createElement('br'));
+                });
+            });
+
+            document.querySelector('form').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const selectedDay = document.querySelector('input[name="day"]:checked').value;
+                const selectedTime = document.querySelector('input[name="time"]:checked').value;
+
+                const reservationUrl = `http://localhost:8080/reservation/day?userId=${userId}&expertId=${selectedExpertId}&reserveDay=${selectedDay}&reserveTime=${selectedTime}`;
+
+                fetch(reservationUrl, {
+                    method: 'POST',
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('예약이 성공적으로 완료되었습니다.');
+                    } else {
+                        alert('해당 시간에 이미 예약이 있습니다. 다른 요일이나 시간을 선택해주세요.');
+                    }
+                })
+                .catch(error => {
+                    console.error('예약 오류:', error);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
-

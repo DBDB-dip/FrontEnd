@@ -53,6 +53,7 @@
 
                     if (response.status === 201) {
                         alert('Information Modification Success');
+                        window.location.href="/mypage";
                         // 성공적으로 수정되었을 때의 처리
                     } else {
                         console.error('서버 응답 오류:', response.status);

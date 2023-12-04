@@ -15,7 +15,7 @@
             <input type="text" name="email" placeholder="Email">
             <input type="password" name="password"placeholder="Password">
             <input type="text" name="name" placeholder="Name">
-            <input type="text" name="phonenumber" placeholder="Phone">
+            <input type="text" name="phoneNumber" placeholder="Phone">
             <input type = "date" name = "birthdate" placeholder = "Birth">
             <label><input type="radio" name="sex" value="F"/>여성</label>
             <label><input type="radio" name="sex" value="M"/>남성</label>
@@ -29,7 +29,7 @@
             const email = document.getElementsByName('email')[0].value;
             const password = document.getElementsByName('password')[0].value;
             const name = document.getElementsByName('name')[0].value;
-            const phone = document.getElementsByName('phonenumber')[0].value;
+            const phone = document.getElementsByName('phoneNumber')[0].value;
             const birth = document.getElementsByName('birthdate')[0].value;
             const sex = document.querySelector('input[name="sex"]:checked').value;
 
@@ -37,7 +37,7 @@
             params.append('email', email);
             params.append('password', password);
             params.append('name', name);
-            params.append('phonenumber', phone);
+            params.append('phoneNumber', phone);
             params.append('birthdate', birth);
             params.append('sex',sex);
 

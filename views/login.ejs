@@ -30,10 +30,6 @@
            const password = formData.get('Password');
 
            const url = `http://localhost:8080/loginpro?Email=${email}&Password=${password}`;
-
-
-            
-         
         
 
             fetch(url, {
@@ -43,14 +39,16 @@
                 },
             }).then(response => response.json())
             .then(result => {
-                if(result){
+                if(result.length ===0){
+                    alert('로그인 실패');
+                   
+                }
+                else{
                     const userId = result[0].id;
                     document.cookie = `userId = ${userId}`;
                     alert(`${result[0].name}` + '님 환영합니다');
                     window.location.href = '/card';
-                }
-                else{
-                    alert('로그인 실패');
+                  
                 }
             })
             .catch(error => console.error('Error:', error));

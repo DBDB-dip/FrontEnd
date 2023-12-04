@@ -21,21 +21,11 @@
         </nav>
     </header>
     <p>"요일과 시간을 선택해주세요."</p>
-    <form >
-        
-        <label for="day">요일</label>
+    <form>
+        <label for="time">요일 및 시간(1시간 단위)</label>
         <div id="daySelection">
             <!-- 라디오 버튼 동적 생성 -->
         </div>
-       
-
-        <p>&nbsp;</p><!-- 간격 추가 -->
-
-        <label for="time">시간(1시간 단위)</label>
-        <div id="timeSelection">
-            <!-- 라디오 버튼 동적 생성 -->
-        </div>
-       
 
         <p>&nbsp;</p><!-- 간격 추가 -->
 
@@ -57,11 +47,10 @@
             }
             return null;
         }
-        
-        const expertsUrl = `http://localhost:8080/experts/${selectedExpertId}`;
-        
 
-        //전문가의 요일과 시간 출력하기.
+        const expertsUrl = `http://localhost:8080/experts/${selectedExpertId}`;
+
+        // 전문가의 요일과 시간 출력하기.
         fetch(expertsUrl)
         .then(response => {
             if (!response.ok) {
@@ -70,10 +59,11 @@
             return response.json(); // JSON 형태로 응답 데이터 가져오기
         })
         .then(data => {
+            console.log(data);
             const responseData = data;
+            
 
             const daySelectionDiv = document.getElementById('daySelection');
-            const timeSelectionDiv = document.getElementById('timeSelection');
 
             function createTimeRange(start, end) {
                 const timeRange = [];
@@ -86,19 +76,19 @@
 
             function convertDayToInteger(day) {
                 switch (day) {
-                    case '월요일':
+                    case 'MON':
                         return 1;
-                    case '화요일':
+                    case 'TUE':
                         return 2;
-                    case '수요일':
+                    case 'WED':
                         return 3;
-                    case '목요일':
+                    case 'THU':
                         return 4;
-                    case '금요일':
+                    case 'FRI':
                         return 5;
-                    case '토요일':
+                    case 'SAT':
                         return 6;
-                    case '일요일':
+                    case 'SUN':
                         return 7;
                     default:
                         return null;
@@ -106,50 +96,44 @@
             }
 
             responseData.forEach(data => {
-                //요일 동적 생성
-                const dayRadioButton = document.createElement('input');
-                dayRadioButton.type = 'radio';
-                dayRadioButton.name = 'day';
-                dayRadioButton.value = convertDayToInteger(data.workday);
-                const label = document.createElement('label');
-                label.textContent = data.workday;
-
-                daySelectionDiv.appendChild(dayRadioButton);
-                daySelectionDiv.appendChild(label);
-                daySelectionDiv.appendChild(document.createElement('br'));
-
-
-                //시간 동적 생성
+                // 시간 동적 생성
                 const timeRange = createTimeRange(data.startTime, data.endTime);
+               
+                const dayLabel = document.createElement('label');
+                dayLabel.textContent = `${data.workDay}: `;
+                daySelectionDiv.appendChild(dayLabel);
+
                 timeRange.forEach(time => {
                     const timeRadioButton = document.createElement('input');
                     timeRadioButton.type = 'radio';
                     timeRadioButton.name = 'time';
-                    timeRadioButton.value = time;
+                    timeRadioButton.value = `${convertDayToInteger(data.workDay)}:${time}`;
                     const timeLabel = document.createElement('label');
                     timeLabel.textContent = time;
 
-                    timeSelectionDiv.appendChild(timeRadioButton);
-                    timeSelectionDiv.appendChild(timeLabel);
-                    timeSelectionDiv.appendChild(document.createElement('br'));
+                    daySelectionDiv.appendChild(timeRadioButton);
+                    daySelectionDiv.appendChild(timeLabel);
+                    daySelectionDiv.appendChild(document.createElement('br'));
                 });
+                
             });
-            
 
-            //선택 후 제출하면 디비에서 예약 진행.
+            // 선택 후 제출하면 디비에서 예약 진행.
             document.querySelector('form').addEventListener('submit', function(event) {
                 event.preventDefault();
 
-                const selectedDay = document.querySelector('input[name="day"]:checked').value;
-                const selectedTime = document.querySelector('input[name="time"]:checked').value;
+                const selectedDateTime = document.querySelector('input[name="time"]:checked').value.split(':');
+                const selectedDay = selectedDateTime[0];
+                console.log(selectedDay);
+                const selectedTime = selectedDateTime[1];
 
-                const reservationUrl = `http://localhost:8080/reservation/day?userId=${userId}&expertId=${selectedExpertId}&reserveDay=${selectedDay}&reserveTime=${selectedTime}`;
+                const reservationUrl = `http://localhost:8080/reservations/day?userId=${userId}&expertId=${selectedExpertId}&reservDay=${selectedDay}&reservTime=${selectedTime}`;
 
                 fetch(reservationUrl, {
                     method: 'POST',
                 })
                 .then(response => {
-                    if (response.status ==201) {
+                    if (response.status == 201) {
                         alert('예약이 성공적으로 완료되었습니다.');
                     } else {
                         alert('이미 찬 예약 입니다. 다른 요일이나 시간을 선택해주세요.');

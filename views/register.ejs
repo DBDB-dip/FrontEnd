@@ -5,63 +5,128 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel = "stylesheet" href = "stylesheets/register.css">
+    <link rel = "stylesheet" href = "stylesheets/mypage.css">
 </head>
 <body>
-    
-    <div class = "register-wrapper">
-        <form method = "post" action = "/login" id = register-form>
-            <h1>회원가입</h1>
-            <input type="text" name="email" placeholder="Email">
-            <input type="password" name="password"placeholder="Password">
-            <input type="text" name="name" placeholder="Name">
-            <input type="text" name="phoneNumber" placeholder="Phone">
-            <input type = "date" name = "birthdate" placeholder = "Birth">
-            <label><input type="radio" name="sex" value="F"/>여성</label>
-            <label><input type="radio" name="sex" value="M"/>남성</label>
-            <input type = "submit" value = "가입하기">
-        </form>
+    <header>
+        <nav>
+            <ul>
+                <li><a href = "/ExpertFilter">예약하기</a></li>
+                <li><a href = "/reserveInfo">예약정보</a></li>
+                <li><a href = "/mypage">회원정보</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="member-info">
+        <table>
+            <thead>
+                <tr>
+                    <th>이름</th>
+                    <th>이메일</th>
+                    <th>전화번호</th>
+                    <th>생년월일</th>
+                </tr>
+            </thead>
+            <tbody id="memberTableBody">
+                <!-- 이곳에 JavaScript를 통해 데이터를 동적으로 추가. -->
+            </tbody>
+        </table>
+        <div class = "button">
+            <a href = "/memberUpdate">수정하기</a>
+            <a href = /memberDelete id = "deleteButton">탈퇴하기</a>
+        </div>
     </div>
     <script>
-        document.getElementById('register-form').addEventListener('submit', function (event) {
-            event.preventDefault(); // 폼 제출 기본 동작을 막음
+        const cookies = document.cookie.split(';').map(cookie => cookie.split('='));
+        const userIdCookie = cookies.find(cookie => cookie[0].trim() === 'userId');
+        const userId = userIdCookie ? userIdCookie[1] : null;
+        let apiUrl = '';
 
-            const email = document.getElementsByName('email')[0].value;
-            const password = document.getElementsByName('password')[0].value;
-            const name = document.getElementsByName('name')[0].value;
-            const phone = document.getElementsByName('phoneNumber')[0].value;
-            const birth = document.getElementsByName('birthdate')[0].value;
-            const sex = document.querySelector('input[name="sex"]:checked').value;
+        async function fetchMemberInfo() {
+            if (userId) {
+                apiUrl = `http://localhost:8080/${userId}/information`;
+                try {
+                    const response = await fetch(apiUrl);
+                    if (response.ok) {
+                        const memberInfo = await response.json();
+                        populateMemberInfo(memberInfo);
+                    } else {
+                        console.error('서버 응답 오류:', response.status);
+                    }
+                } catch (error) {
+                    console.error('데이터를 불러오는 도중 에러가 발생했습니다:', error);
+                }
+            } else {
+                console.log('userId를 찾을 수 없습니다.');
+            }
+        }
 
-            const params = new URLSearchParams();
-            params.append('email', email);
-            params.append('password', password);
-            params.append('name', name);
-            params.append('phoneNumber', phone);
-            params.append('birthdate', birth);
-            params.append('sex',sex);
+        function populateMemberInfo(memberInfo) {
+            const memberTableBody = document.getElementById('memberTableBody');
+            memberTableBody.innerHTML = '';
 
-            fetch('http://localhost:8080/joinpro?'+params.toString(),{
+            const row = document.createElement('tr');
+
+            // 이름 추가
+            const nameCell = document.createElement('td');
+            nameCell.textContent = memberInfo.name; // 이름 필드에 접근하는 방법에 따라 수정
+            row.appendChild(nameCell);
+
+            // 이메일 추가
+            const emailCell = document.createElement('td');
+            emailCell.textContent = memberInfo.email; // 이메일 필드에 접근하는 방법에 따라 수정
+            row.appendChild(emailCell);
+
+            // 전화번호 추가
+            const phoneCell = document.createElement('td');
+            phoneCell.textContent = memberInfo.phoneNumber; // 전화번호 필드에 접근하는 방법에 따라 수정
+            row.appendChild(phoneCell);
+
+            // 생년월일 추가
+            const birthDateCell = document.createElement('td');
+            birthDateCell.textContent = memberInfo.birthDate; // 생년월일 필드에 접근하는 방법에 따라 수정
+            row.appendChild(birthDateCell);
+
+            memberTableBody.appendChild(row);
+        }
+
+        // 페이지 로드 시 회원 정보를 가져와서 테이블에 추가
+        fetchMemberInfo();
+
+        const deleteButton = document.getElementById('deleteButton');
+deleteButton.addEventListener('click', handleDelete);
+
+async function handleDelete(event) {
+    event.preventDefault();
+
+    const cookies = document.cookie.split(';').map(cookie => cookie.split('='));
+    const userIdCookie = cookies.find(cookie => cookie[0].trim() === 'userId');
+    const userId = userIdCookie ? userIdCookie[1] : null;
+
+    if (userId) {
+        const apiUrl = `http://localhost:8080/${userId}/resign`;
+        try {
+            const response = await fetch(apiUrl, {
                 method: 'POST'
-              
-            }).then(response =>{
-                if(response.status == 201){
-                    alert('회원가입성공');
-                    window.location.href = '/login'
-                }
-                else if(response.status== 409){
-                    alert('이미 가입된 이메일');
-                    window.location.href = '/login'
-                }
-            })
-            .then(result=>{
-                if(result)
-                    window.location.href='/login';
-            })
-           
-            .catch(error => console.error('Error:', error));
-          
-        });
+            });
+
+            if (response.ok) {
+                alert('회원 탈퇴가 완료되었습니다.');
+                window.location.href = "/login";
+            } else {
+                console.error('서버 응답 오류:', response.status);
+                alert('회원 탈퇴에 실패했습니다. 다시 시도해주세요.');
+            }
+        } catch (error) {
+            console.error('요청 중 에러가 발생했습니다:', error);
+            alert('요청 처리 중 에러가 발생했습니다. 다시 시도해주세요.');
+        }
+    } else {
+        console.log('userId를 찾을 수 없습니다.');
+    }
+}
+
+
     </script>
 </body>
 </html>

@@ -41,6 +41,7 @@
         </table>
     </div>
     <div id="review-form" style="display: none;">
+
         <form id="review-form-data">
             <input type="hidden" id="selected-reservation-id" value="" />
             <label for="review-message">리뷰 메시지:</label><br>
@@ -108,6 +109,8 @@
         const reviewButton = document.createElement('button');
         reviewButton.textContent = '리뷰쓰기';
         reviewButton.addEventListener('click', () => openReviewForm(data.id)); // 리뷰 작성 폼 열기
+      
+        
         reviewCell.appendChild(reviewButton);
         row.appendChild(reviewCell);
 
@@ -116,14 +119,52 @@
         }
       
         Reservation();
-
+        
         async function openReviewForm(reservationId) {
             const reviewForm = document.getElementById('review-form');
             const selectedReservationId = document.getElementById('selected-reservation-id');
             selectedReservationId.value = reservationId; // 선택된 예약 ID를 hidden input에 설정
-    
+            console.log(selectedReservationId.value);
             reviewForm.style.display = 'block'; // 리뷰 폼 보이기
+
+             // 리뷰 폼을 제출하는 함수
+document.getElementById('review-form-data').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // 리뷰 폼에서 사용자가 작성한 내용 가져오기
+   
+    const comments = document.getElementById('review-message').value;
+    const starRate = document.getElementById('review-rating').value; // 리뷰 평점 입력란
+    
+
+    const reviewUrl = `http://localhost:8080/reservations/reviews?reservationId=${reservationId}&comments=${comments}&starRate=${starRate}`;
+    
+    
+   
+
+    // 리뷰 데이터를 API 엔드포인트로 전송
+    fetch(reviewUrl, {
+        method: 'POST'
+    })
+    .then(response =>{
+        return response.text();
+    })
+    .then(data => {
+        if (data === "Review created successfully") {
+           
+            alert('리뷰 등록 완료.');
+        } else {
+            alert('리뷰 등록 실패');
         }
+    })
+    .catch(error => {
+        console.error('예약 오류:', error);
+    });
+});
+        }
+
+
+       
 
 
         async function getPre() {
